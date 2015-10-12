@@ -78,9 +78,15 @@ $("details").each(function(k, el) {
 
 ## Build
 
-Get Google Closure Compiler and run :
+The build tool is [Google Closure Compiler](https://developers.google.com/closure/compiler/).
 
-`closure-compiler --js __SRC/INPUT-FILE --js_output_file __COMPILE/OUTPUT-FILE`
+On OS X with [homebrew](http://brew.sh), install with `brew install closure-compiler`. On other platforms, follow the [installation instructions](https://developers.google.com/closure/compiler/).
+
+Then, run:
+
+```
+closure-compiler --js __SRC/Element.details.js --js_output_file __COMPILE/Element.details.js
+```
 
 ## TODO
 1. Listeners (open/close)
