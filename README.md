@@ -19,7 +19,7 @@ __Demo__: http://jsbin.com/eyopiy/5
 ```
 
 ## DOM API
-    
+
 ```javascript
 var details = document.querySelector("details");
 details.open = true;
@@ -27,7 +27,7 @@ details.open = false;
 ```
 
 ## CSS selector for 'details marker'
-   
+
 ```css
 detail .details-marker { <some> }
 [or] detail>*>.details-marker { <some> }
@@ -40,7 +40,7 @@ summary::details-marker { <some> }
 
 ##Use with dynamic HTML
 DOM API:
-	
+
 ```javascript
 Array.from(document.querySelectorAll('details')).forEach(function(el){
 	el.open = el.open
@@ -48,13 +48,13 @@ Array.from(document.querySelectorAll('details')).forEach(function(el){
 ```
 
 jQuery:
-	
+
 ```javascript
 $("details").each(function(k, el) {
 	el.open = el.open;
 })
 ```
-	
+
 ##Features
 
 - DOM API (Extend Node.prototype with "open" property)
@@ -64,17 +64,29 @@ $("details").each(function(k, el) {
 - IE6 and IE7 support with some tweaks
 
 ##Limitations
-1. Require: 
+1. Require:
 	- For some old browsers (not only IE) you may need [DOM-shim](https://github.com/Raynos/DOM-shim) or [DOM4/ES5 shim](https://github.com/termi/ES5-DOM-SHIM) to solve some dependencies
 2. No animation support for now
 
- 
+
 ## Browser support
  - All browsers including IE8
  - IE7,IE6 only support with `Element.details.ielt8.htc` file in the root of youre site
 
 ## IE < 8
  - Problem: Property `open` has the same name as Attribute `open` -> rename attribute to "$OPEN$"
+
+## Build
+
+The build tool is [Google Closure Compiler](https://developers.google.com/closure/compiler/).
+
+On OS X with [homebrew](http://brew.sh), install with `brew install closure-compiler`. On other platforms, follow the [installation instructions](https://developers.google.com/closure/compiler/).
+
+Then, run:
+
+```
+closure-compiler --js __SRC/Element.details.js --js_output_file __COMPILE/Element.details.js
+```
 
 ## TODO
 1. Listeners (open/close)
