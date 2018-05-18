@@ -16,6 +16,27 @@ HTMLElement.prototype.insertAdjacentHTML = https://gist.github.com/1276030
 
 	"use strict";
 
+	/**
+	 * CustomEvent polyfill
+	 *
+	 * @see https://developer.mozilla.org/en-US/docs/Web/API/CustomEvent/CustomEvent
+	 */
+	(function () {
+
+		if ( typeof window.CustomEvent === "function" ) return false;
+
+		function CustomEvent ( event, params ) {
+			params = params || { bubbles: false, cancelable: false, detail: undefined };
+			var evt = document.createEvent( 'CustomEvent' );
+			evt.initCustomEvent( event, params.bubbles, params.cancelable, params.detail );
+			return evt;
+		 }
+
+		CustomEvent.prototype = window.Event.prototype;
+
+		window.CustomEvent = CustomEvent;
+	})();
+
 	if(!support) {
 		var /** @type {Object} */
 		    open_property
@@ -40,44 +61,45 @@ HTMLElement.prototype.insertAdjacentHTML = https://gist.github.com/1276030
 		open_property = {
 			"get" : function() {
 				if(!("nodeName" in this) || this.nodeName.toUpperCase() != "DETAILS")return void 0;
-				
+
 				return this.hasAttribute("open");
 			},
 			"set" : function(booleanValue) {
 				if(!("nodeName" in this) || this.nodeName.toUpperCase() != "DETAILS")return void 0;
-				
+
 				detailsShim(this);
-				
+
 				this.classList[booleanValue ? "add" : "remove"]('▼');
 				(this[booleanValue ? 'setAttribute' : 'removeAttribute'])("open", "open");
-				
+
 				return booleanValue;
 			}
 		};
-	
-		//event		
+
+		//event
 		event_DetailClick = function(e) {
 			// 32 - space. Need this ???
 			// 13 - Enter.
-			
+
 			if(e.keyCode === 13 ||//e.type == "keyup"
 			   e.type === "click")
 				this.parentNode["open"] = !this.parentNode["open"];
+				this.parentNode.dispatchEvent(new CustomEvent('toggle'));
 		};
 
 		//details shim
 		detailsShim = function(details) {
 			if(details._ && details._["__isShimmed"])return;
-			
+
 			if(!details._)details._ = {};
-			
+
 			var /** @type {Element} */
 				summary,
 				/** @type {number} */
 				i = 0,
 				child,
 				j = -1;
-						
+
 			//Wrap text node's and found `summary`
 			while(child = details.childNodes[++j]) {
 				if(child.nodeType === 3 && /[^\t\n\r ]/.test(child.data)) {
@@ -89,46 +111,46 @@ HTMLElement.prototype.insertAdjacentHTML = https://gist.github.com/1276030
 				}
 				else if(child.nodeName.toUpperCase() == "SUMMARY")summary = child;
 			}
-			
+
 			//Create a fake "summary" element
 			if(!summary)
 				(
 					summary = document.createElement("x-s")
 				).innerHTML = "Details",
 				summary.className = "▼▼";//http://css-tricks.com/unicode-class-names/
-				
+
 			//Put summary as a first child
 			details.insertBefore(summary, details.childNodes[0]);
 			//Create `details-marker` and put it as a summary first child
 			summary.insertBefore(document.createElement('x-i'), summary.childNodes[0])
 				.className = "details-marker";
-			
+
 			//For access from keyboard
 			summary.tabIndex = 0;
-			
+
 			//events
 			summary.addEventListener("click", event_DetailClick, false);
 			summary.addEventListener("keyup", event_DetailClick, false);
-			
+
 			//flag to avoid double shim
 			details._["__isShimmed"] = 1;
 		};
-		
+
 		//init
 		init = function() {
 			// property 'open'
 			Object.defineProperty(global["Element"].prototype, "open", open_property);
-			
+
 			var detailses = document.getElementsByTagName("details"),
 				details,
 				i = -1;
 			while(details = detailses[++i]) {
 				//DOM API
-				details["open"] = 
+				details["open"] =
 					details.hasAttribute("open");
 			}
 		};
-		
+
 		//auto init
 		if(document.readyState != "complete")
 			document.addEventListener("DOMContentLoaded", init, false);
@@ -139,7 +161,7 @@ HTMLElement.prototype.insertAdjacentHTML = https://gist.github.com/1276030
 	}
 })(
 	window,//global
-	
+
 	'open' in document.createElement('details')// Chrome 10 will fail this detection, but Chrome 10 is no longer existing
 );
 
