@@ -1,0 +1,22 @@
+{
+  "name": "@evanminto/element.details",
+  "version": "0.2.1",
+  "description": "A pure JS polyfill for <details> tag with DOM API for all browsers including IE6+",
+  "main": "__SRC/Element.details.js",
+  "directories": {
+    "example": "example"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/evanminto/Element.details.git"
+  },
+  "author": "evan.minto@gmail.com",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/evanminto/Element.details/issues"
+  },
+  "homepage": "https://github.com/evanminto/Element.details#readme"
+}
